@@ -7,7 +7,7 @@ import SwingShapes.Rectangle;
 
 public class Paddle {
 	private Rectangle paddle;
-	private int paddleSpeed = 2;
+	private int speed = 2;
 	
 	public Paddle() {
 		paddle = new Rectangle();
@@ -39,12 +39,16 @@ public class Paddle {
 		return paddle.getHeight();
 	}
 	
+	public int getSpeed() {
+		return speed;
+	}
+	
 	public void moveUp() {
-		paddle.setLocation(paddle.getXLocation(), paddle.getYLocation() + Direction.UP.getVelocity() * paddleSpeed);
+		paddle.setLocation(paddle.getXLocation(), paddle.getYLocation() + Direction.UP.getVelocity() * speed);
 	}
 	
 	public void moveDown() {
-		paddle.setLocation(paddle.getXLocation(), paddle.getYLocation() + Direction.DOWN.getVelocity() * paddleSpeed);
+		paddle.setLocation(paddle.getXLocation(), paddle.getYLocation() + Direction.DOWN.getVelocity() * speed);
 	}
 	
 	public void draw(Graphics2D g) {

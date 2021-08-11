@@ -9,13 +9,13 @@ public class Ball {
 	private Rectangle ball;
 	private Direction xDirection;
 	private Direction yDirection;
-	private int ballSpeed = 2;
+	private int speed = 2;
 	
 	public Ball() {
 		ball = new Rectangle();
 		ball.setColor(Color.white);
 		ball.setSize(10,  10);
-		xDirection = Direction.RIGHT;
+		xDirection = Direction.LEFT;
 		yDirection = Direction.UP;
 	}
 	
@@ -31,8 +31,8 @@ public class Ball {
 		return ball.getYLocation();
 	}
 	
-	public void setYLocation(int yxLocation) {
-		ball.setLocation(ball.getXLocation(), yxLocation);
+	public void setYLocation(int yLocation) {
+		ball.setLocation(ball.getXLocation(), yLocation);
 	}
 	
 	public Direction getXDirection() {
@@ -50,9 +50,21 @@ public class Ball {
 	public void setYDirection(Direction yDirection) {
 		this.yDirection = yDirection;
 	}
+	
+	public int getWidth() {
+		return ball.getWidth();
+	}
+	
+	public int getHeight() {
+		return ball.getHeight();
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
 
-	public void update() {
-		ball.setLocation(ball.getXLocation() + xDirection.getVelocity() * ballSpeed, ball.getYLocation() + yDirection.getVelocity() * ballSpeed);
+	public void move() {
+		ball.setLocation(ball.getXLocation() + xDirection.getVelocity() * speed, ball.getYLocation() + yDirection.getVelocity() * speed);
 	}
 	
 	public void draw(Graphics2D g) {
