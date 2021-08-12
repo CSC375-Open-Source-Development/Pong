@@ -50,7 +50,7 @@ public class Ball {
 	public void setYDirection(Direction yDirection) {
 		this.yDirection = yDirection;
 	}
-	
+
 	public int getWidth() {
 		return ball.getWidth();
 	}
@@ -63,8 +63,12 @@ public class Ball {
 		return speed;
 	}
 
-	public void move() {
-		ball.setLocation(ball.getXLocation() + xDirection.getVelocity() * speed, ball.getYLocation() + yDirection.getVelocity() * speed);
+	public void moveX() {
+		ball.setLocation(ball.getXLocation() + xDirection.getVelocity() * speed, ball.getYLocation());
+	}
+	
+	public void moveY() {
+		ball.setLocation(ball.getXLocation(), ball.getYLocation() + yDirection.getVelocity() * speed);
 	}
 	
 	public void draw(Graphics2D g) {

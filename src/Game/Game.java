@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import GUIControls.Window;
+import Models.Axis;
 import Models.Ball;
 import Models.Direction;
 import Models.Paddle;
@@ -37,36 +38,57 @@ public class Game extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// move player paddle
 				if (directionPressed != null) {
 					if (directionPressed == Direction.UP) {
 						paddlePlayer.moveUp();
+						if (isBallIntersectingPaddle(paddlePlayer)) {
+							ball.setYLocation(paddlePlayer.getYLocation() + paddlePlayer.getHeight());
+						}
 					} 
 					else if (directionPressed == Direction.DOWN) {
 						paddlePlayer.moveDown();
+						if (isBallIntersectingPaddle(paddlePlayer)) {
+							ball.setYLocation(paddlePlayer.getYLocation() - ball.getHeight());
+						}
 					}
 				}
 
+				// move cpu paddle
 				if (paddleCpuDirection == Direction.UP) {
 					if (paddleCpu.getYLocation() + Direction.UP.getVelocity() * paddleCpu.getSpeed() > 0) {
 						paddleCpu.moveUp();
+						if (isBallIntersectingPaddle(paddleCpu)) {
+							ball.setYLocation(paddleCpu.getYLocation() + paddleCpu.getHeight());
+						}
 					}
 					else {
 						paddleCpuDirection = Direction.DOWN;
 					}
 				} 
 				else if (paddleCpuDirection == Direction.DOWN) {
-					if (paddleCpu.getYLocation() + paddleCpu.getHeight()
-							+ Direction.DOWN.getVelocity() * paddleCpu.getSpeed() < getHeight()) {
+					if (paddleCpu.getYLocation() + paddleCpu.getHeight() + Direction.DOWN.getVelocity() * paddleCpu.getSpeed() < getHeight()) {
 						paddleCpu.moveDown();
+						if (isBallIntersectingPaddle(paddleCpu)) {
+							ball.setYLocation(paddleCpu.getYLocation() - ball.getHeight());
+						}
 					} 
 					else {
 						paddleCpuDirection = Direction.UP;
 					}
 				}
 				
-				ball.move();
-
+				// move ball x axis
+				ball.moveX();
 				
+				// check ball x axis paddle collisions
+				paddleBallCollisionHandler(paddlePlayer, Axis.X);
+				paddleBallCollisionHandler(paddleCpu, Axis.X);
+				
+				// move ball y axis
+				ball.moveY();
+				
+				// check ball x axis wall collisions
 				if (ball.getYDirection() == Direction.UP && ball.getYLocation() < 0) {
 					ball.setYDirection(Direction.DOWN);
 					ball.setYLocation(0);
@@ -75,51 +97,12 @@ public class Game extends JPanel {
 					ball.setYDirection(Direction.UP);
 					ball.setYLocation(getHeight() - ball.getHeight());
 				}
-	
-				if (isBallIntersectingPaddle(paddlePlayer, ball)) {
-					if (ball.getXDirection() == Direction.LEFT) {
-						ball.setXLocation(paddlePlayer.getXLocation() + paddlePlayer.getWidth());
-						ball.setXDirection(Direction.RIGHT);
-					}
-					else if (ball.getXDirection() == Direction.RIGHT) {
-						ball.setXLocation(paddlePlayer.getXLocation() - ball.getWidth());
-						ball.setXDirection(Direction.LEFT);
-					}
-				}
 				
-				if (isBallIntersectingPaddle(paddlePlayer, ball)) {
-					if (ball.getYDirection() == Direction.UP) {
-						ball.setYLocation(paddlePlayer.getYLocation() + paddlePlayer.getHeight());
-						ball.setYDirection(Direction.DOWN);
-					}
-					else if (ball.getYDirection() == Direction.DOWN) {
-						ball.setYLocation(paddlePlayer.getYLocation());
-						ball.setYDirection(Direction.UP);
-					}
-				}
+				// check ball x axis paddle collisions
+				paddleBallCollisionHandler(paddlePlayer, Axis.Y);
+				paddleBallCollisionHandler(paddleCpu, Axis.Y);
 				
-				if (isBallIntersectingPaddle(paddleCpu, ball)) {
-					if (ball.getXDirection() == Direction.LEFT) {
-						ball.setXLocation(paddleCpu.getXLocation() + paddleCpu.getWidth());
-						ball.setXDirection(Direction.RIGHT);
-					}
-					else if (ball.getXDirection() == Direction.RIGHT) {
-						ball.setXLocation(paddleCpu.getXLocation() - ball.getWidth());
-						ball.setXDirection(Direction.LEFT);
-					}
-				}
-				
-				if (isBallIntersectingPaddle(paddleCpu, ball)) {
-					if (ball.getYDirection() == Direction.UP) {
-						ball.setYLocation(paddleCpu.getYLocation() + paddleCpu.getHeight());
-						ball.setYDirection(Direction.DOWN);
-					}
-					else if (ball.getYDirection() == Direction.DOWN) {
-						ball.setYLocation(paddleCpu.getYLocation());
-						ball.setYDirection(Direction.UP);
-					}
-				}
-				
+				// if ball hits either left or right side of screen, game over
 				if (ball.getXLocation() < 0 || ball.getXLocation() + ball.getWidth() > getWidth()) {
 					System.exit(1);
 				}
@@ -187,7 +170,32 @@ public class Game extends JPanel {
 		g.setColor(oldColor);
 	}
 	
-	private boolean isBallIntersectingPaddle(Paddle paddle, Ball ball) {
+	private void paddleBallCollisionHandler(Paddle paddle, Axis axis) {
+		if (isBallIntersectingPaddle(paddle)) {
+			if (axis == Axis.X) {
+				if (ball.getXDirection() == Direction.LEFT) {
+					ball.setXLocation(paddle.getXLocation() + paddle.getWidth());
+					ball.setXDirection(Direction.RIGHT);
+				}
+				else if (ball.getXDirection() == Direction.RIGHT) {
+					ball.setXLocation(paddle.getXLocation() - ball.getWidth());
+					ball.setXDirection(Direction.LEFT);
+				}
+			}
+			else if (axis == Axis.Y) {
+				if (ball.getYDirection() == Direction.UP) {
+					ball.setYLocation(paddle.getYLocation() + paddle.getHeight());
+					ball.setYDirection(Direction.DOWN);
+				}
+				else if (ball.getYDirection() == Direction.DOWN) {
+					ball.setYLocation(paddle.getYLocation() - ball.getHeight());
+					ball.setYDirection(Direction.UP);
+				}
+			}
+		}
+	}
+	
+	private boolean isBallIntersectingPaddle(Paddle paddle) {
 		return paddle.getXLocation() < ball.getXLocation() + ball.getWidth() && paddle.getXLocation() + paddle.getWidth() > ball.getXLocation() && 
 			paddle.getYLocation() < ball.getYLocation() + ball.getHeight() && paddle.getYLocation() + paddle.getHeight() > ball.getYLocation();
 	}
