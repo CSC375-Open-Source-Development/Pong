@@ -114,22 +114,22 @@ public class Game extends JPanel {
 		this.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (e.getKeyCode() == KeyEvent.VK_W) {
 					directionPressed = Direction.UP;
 				}
-				if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				if (e.getKeyCode() == KeyEvent.VK_S) {
 					directionPressed = Direction.DOWN;
 				}
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_UP) {
+				if (e.getKeyCode() == KeyEvent.VK_W) {
 					if (directionPressed == Direction.UP) {
 						directionPressed = null;
 					}
 				}
-				if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				if (e.getKeyCode() == KeyEvent.VK_S) {
 					if (directionPressed == Direction.DOWN) {
 						directionPressed = null;
 					}
